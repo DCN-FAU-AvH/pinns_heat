@@ -12,13 +12,12 @@ This repository will show how to solve the 1D heat equation using PINNs. This co
 ## How PINNs Work for the Heat Equation
 
 Let us consider the heat equation
-$$\eqalign{\partial_t u-\partial_{xx} u=f \quad &\text{in }(0,L)\times (0,T),\\
-u(0,t)=u(L,t)=0  &\text{in }(0,T),\\
-u(x,0)=u_0(x)    &\text{in }(0,L),}
-$$
+
+$$\begin{cases}\partial_t u-\partial_{xx} u=f  & \text{in }(0,L)\times (0,T),\qquad &\text{(PDE)} \newline u(0,t)=u(L,t)=0  &\text{in }(0,T), &\text{(Boundary conditions)} \newline u(x,0)=u_0(x)    &\text{in }(0,L), & \text{(Initial condition)}\end{cases}$$
+
 
 where $u_0\in L^2(0,L)$ in the initial condition and $f\in L^2(0,T;0,L)$ is a source term. Here, $x$ and $t$ denote the spatial and temporal variables.
-We consider a dataset $\\{d^k\\}^{N}\_{k=1}$ where $d_k=(x_k,t_k)$ for every $k$. We also consider the neural network
+We consider a dataset $\\{d^k\\}^{N}\_{k=1}$ where $d_k=(x_k,t_k)$ for every $k$, i.e., a spatio-temporal mesh. We also consider the neural network
 
 $$
 \eqalign{
@@ -26,7 +25,7 @@ $$
 {z}^{k}\_{0}={d}^{k},}
 $$
 
-with $\sigma$ being the hyperbolic tangent function and $\Theta=\\{({a}\_j,{b}\_j)\\}\_{j=1}^{M}$ the neural network parameters. We denote by $z_{\Theta}[d^k]$ the output of the neural network for the data $d^k$ with the parameters
+with $\sigma$ being the hyperbolic tangent function and $\Theta=\\{({a}\_j,{b}\_j)\\}\_{j=1}^{M}$ the neural network parameters. We denote by $z_{\Theta}[d^k]$ the output of the neural network for the data $d^k$ with the parameters $\Theta$.
 
 PINNs aim to find the parameters $\Theta=\{(a_j,b_j)\}_{j=1}^{M}$ such that
 
@@ -34,7 +33,7 @@ $$
 z_\Theta^k\approx u(x_k,t_k), \quad \text{for every } k\in \{1,\dots, N\} \qquad (1).
 $$
 
-**Remark 1:** Both the architecture and the activation function of the previous neural network can be changed, taking care that this new architecture has reasonable approximation properties and that the activation function is as differentiable as the PINNs scheme requires. In the case of the heat equation, from the standard theory of parabolic equations, the solution is in $C(0,T;L^2(0,L))$. Therefore, it is enough that the neural network approximates a dense family in $C(0,T;L^2(0,L))$.
+**Remark 1:** Both the architecture and the activation function of the previous neural network can be changed, taking care that this new architecture has reasonable approximation properties and that the activation function is as differentiable as the PINNs scheme requires. In the case of the heat equation, from the standard theory of parabolic equations, the solution is in $C(0,T;L^2(0,L))$. Therefore, it is enough that the neural network approximates a dense family in $C(0,T;L^2(0,L))$. It is also necessary to consider a twice-differentiable activation function.
 
 The key idea of PINNs to satisfy (1), is to introduce a penalty to the neural network so that it satisfies both the PDE and the boundary and initial conditions. For this, we introduce the following loss functions.
 
@@ -44,7 +43,7 @@ Loss_{BC} (\Theta):= \frac{1}{N_{bc}} \sum_{d^k\in D_{bc}}^{N_{bc}} \| z_{\Theta
 Loss_{INT} (\Theta):= \sum_{d^k\in D_0} \|z_{\Theta}[d^k]\|^2,
 $$
 
-where $D_{INT}$ is the set of points inside $(0,L)\times(0,T)$, $D_{BC}$ the set of points in $(\{0\}\cup \{L\})\times(0,T)$ and $D_{0}$ the set of points in $(0,L)\times\{0\}$. Thus, the loss function we consider in training the neural network is:
+where $D_{INT}$ is the set of points of $\\{d^k\\}^{N}\_{k=1}$ inside $(0,L)\times(0,T)$, $D_{BC}$ the set of points of $\\{d^k\\}^{N}\_{k=1}$ in $(\{0\}\cup \{L\})\times(0,T)$ and $D_{0}$ the set of points of $\\{d^k\\}^{N}\_{k=1}$ in $(0,L)\times\{0\}$. Thus, the loss function we consider in training the neural network is:
 
 $$
 Loss(\Theta):=w_{PDE}*Loss_{PDE}(\Theta)+w_{BC}*Loss_{BC} (\Theta)+Loss_{INT} (\Theta).\qquad (2)
@@ -58,7 +57,7 @@ This code contains two examples.
 
 **1) Example_1:** This corresponds to the solution of the heat equation on the domain $(x,t) \in (-1,1) \times (0,1)$. To illustrate the performance, we chose an exact solution given by $u_{real}^1(x,t) = e^{-t}\sin(\pi x)$. The source term and the initial condition are chosen to ensure $u_{real}^1$ as a solution of the heat equation.
 
-**1) Example_2:** This corresponds to the solution of the heat equation on the domain $(x,t) \in (0,1) \times (0,10)$. To illustrate the performance, we chose an exact solution given by $u_{real}^2(x,t) = x^2(x-1)^2(t-1/2)^2$. The source term and the initial condition are chosen to ensure $u_{real}^2$ as a solution of the heat equation.
+**2) Example_2:** This corresponds to the solution of the heat equation on the domain $(x,t) \in (0,1) \times (0,10)$. To illustrate the performance, we chose an exact solution given by $u_{real}^2(x,t) = x^2(x-1)^2(t-1/2)^2$. The source term and the initial condition are chosen to ensure $u_{real}^2$ as a solution of the heat equation.
 
 
 ## Explanation of the Code.
@@ -69,7 +68,7 @@ The code is divided into seven sections:
 
 **2) Device configuration:** General configurations. We define the device and the type of float that will be used in Torch.
 
-**3) Tuning Parameters:** Here we can tunning the parameters, among them are
+**3) Tuning Parameters:** Here we can tunning the parameters, among them are:
 
 * step: Corresponds to the number of steps in the neural network training process.
 * batch_size: To optimize the database, we divide it into batches, and this parameter defines the size of the batches.
