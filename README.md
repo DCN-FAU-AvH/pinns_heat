@@ -1,10 +1,10 @@
 # Basic PINNs Tutorial.
 
-This repository provides some basic insights about PINNs (Physics Informed Neural Networks) and how to implement them.
+This repository provides some basic insights on Physics Informed Neural Networks (PINNs) and their implementation.
 
-PINNs are numerical methods based on the universal approximation capacity of neural networks, aiming to approximate solutions of partial differential equations. In recent years, extensive attention has been paid to approximating solutions of various equations, and different concepts of PINNs have been introduced. See [1](https://github.com/idrl-lab/PINNpapers) for a walkthrough of the classical literature of PINNs.
+PINNs are numerical methods based on the universal approximation capacity of neural networks, aiming to approximate solutions of partial differential equations. Recently, extensive focus has been on approximating solutions of various equations, leading to the introduction of different PINN concepts. See [PINN papers](https://github.com/idrl-lab/PINNpapers) for a walkthrough of the classical literature on PINNs.
 
-This repository will show how to solve the 1D heat equation using PINNs. This code can simply be modified to solve different types of equations, such as those in higher dimensions.
+This repository will show how to solve the 1D heat equation using PINNs. This code can be easily modified to solve a variety of equations in higher-dimensional domains.
 
 <img src="./results/test_example_2_20231113-230629/0_video_u.gif" width="40%" height="40%" >
 
@@ -17,7 +17,7 @@ $$\begin{cases}\partial_t u-\partial_{xx} u=f  & \text{in }(0,L)\times (0,T),\qq
 
 
 where $u_0\in L^2(0,L)$ in the initial condition and $f\in L^2(0,T;0,L)$ is a source term. Here, $x$ and $t$ denote the spatial and temporal variables.
-We consider a dataset $\\{d^k\\}^{N}\_{k=1}$ where $d_k=(x_k,t_k)$ for every $k$, i.e., a spatio-temporal mesh. We also consider the neural network
+We consider a dataset $D=\\{d^k\\}^{N}\_{k=1}$ where $d_k=(x_k,t_k)$ for every $k$, i.e., a spatio-temporal mesh. We also consider the neural network
 
 $$
 \eqalign{
@@ -27,13 +27,13 @@ $$
 
 with $\sigma$ being the hyperbolic tangent function and $\Theta=\\{({a}\_j,{b}\_j)\\}\_{j=1}^{M}$ the neural network parameters. We denote by $z_{\Theta}[d^k]$ the output of the neural network for the data $d^k$ with the parameters $\Theta$.
 
-PINNs aim to find the parameters $\Theta=\{(a_j,b_j)\}_{j=1}^{M}$ such that
+PINNs aim to find the parameters $\Theta=\\{(a_j,b_j)\\}_{j=1}^{M}$ such that
 
 $$
 z_\Theta^k\approx u(x_k,t_k), \quad \text{for every } k\in \{1,\dots, N\} \qquad (1).
 $$
 
-**Remark 1:** Both the architecture and the activation function of the previous neural network can be changed, taking care that this new architecture has reasonable approximation properties and that the activation function is as differentiable as the PINNs scheme requires. In the case of the heat equation, from the standard theory of parabolic equations, the solution is in $C(0,T;L^2(0,L))$. Therefore, it is enough that the neural network approximates a dense family in $C(0,T;L^2(0,L))$. It is also necessary to consider a twice-differentiable activation function.
+**Remark 1:** Both the architecture and the activation function of the previous neural network can be changed, taking care that this new architecture has reasonable approximation properties and that the activation function is as differentiable as the PINN scheme requires. In the case of the heat equation, from the standard theory of parabolic equations, the solution is in $C(0,T;L^2(0,L))$. Therefore, it is enough that the neural network approximates a dense family in $C(0,T;L^2(0,L))$. It is also necessary to consider a twice-differentiable activation function.
 
 The key idea of PINNs to satisfy (1), is to introduce a penalty to the neural network so that it satisfies both the PDE and the boundary and initial conditions. For this, we introduce the following loss functions.
 
@@ -43,11 +43,13 @@ $$\eqalign{
 &Loss_{INT} (\Theta):= \sum_{d^k\in D_0} \|z_{\Theta}[d^k]\|^2,}
 $$
 
-where $D_{INT}$ is the set of points of $\\{d^k\\}^{N}\_{k=1}$ inside $(0,L)\times(0,T)$, $D_{BC}$ the set of points of $\\{d^k\\}^{N}\_{k=1}$ in $(\{0\}\cup \{L\})\times(0,T)$ and $D_{0}$ the set of points of $\\{d^k\\}^{N}\_{k=1}$ in $(0,L)\times\{0\}$. Thus, the loss function we consider in training the neural network is:
+where $D_{INT}$ is the set of points of $D$ inside $(0,L)\times(0,T)$, $D_{BC}$ the set of points of $D$ in $(\\{0\\}\cup \{L\})\times(0,T)$ and $D_{0}$ the set of points of $D$ in $(0,L)\times\\{0\\}$. Thus, the loss function we consider in training the neural network is:
 
 $$
-Loss(\Theta):=w_{PDE}*Loss_{PDE}(\Theta)+w_{BC}*Loss_{BC} (\Theta)+Loss_{INT} (\Theta).\qquad (2)
+Loss(\Theta):=w_{PDE}*Loss_{PDE}(\Theta)+w_{BC}*Loss_{BC} (\Theta)+w_{INT}*Loss_{INT} (\Theta),\qquad (2)
 $$
+
+where the constants $w_{PDE}$, $w_{BC}$ and $w_{INT}$ are hyperparameters of the model.
 
 **Remark 2:** One of the important advantages of PINNs is that it is not necessary to know labels. It is only necessary to have a sample of points from our spatio-temporal domain.
 
