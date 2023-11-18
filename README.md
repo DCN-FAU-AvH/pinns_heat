@@ -37,10 +37,10 @@ $$
 
 The key idea of PINNs to satisfy (1), is to introduce a penalty to the neural network so that it satisfies both the PDE and the boundary and initial conditions. For this, we introduce the following loss functions.
 
-$$
-Loss_{PDE}(\Theta):= \frac{1}{N_f} \sum_{d^k\in D_{PDE}}^{N_f}\|(\partial_t z_\Theta-\partial_{xx} z_{\Theta})[d^k] - f\|^2,\quad
-Loss_{BC} (\Theta):= \frac{1}{N_{bc}} \sum_{d^k\in D_{bc}}^{N_{bc}} \| z_{\Theta}[d^k]\|^2,\quad
-Loss_{INT} (\Theta):= \sum_{d^k\in D_0} \|z_{\Theta}[d^k]\|^2,
+$$\eqalign{
+&Loss_{PDE}(\Theta):= \frac{1}{N_f} \sum_{d^k\in D_{PDE}}^{N_f}\|(\partial_t z_\Theta-\partial_{xx} z_{\Theta})[d^k] - f\|^2, \newline 
+&Loss_{BC} (\Theta):= \frac{1}{N_{bc}} \sum_{d^k\in D_{bc}}^{N_{bc}} \| z_{\Theta}[d^k]\|^2, \newline 
+&Loss_{INT} (\Theta):= \sum_{d^k\in D_0} \|z_{\Theta}[d^k]\|^2,}
 $$
 
 where $D_{INT}$ is the set of points of $\\{d^k\\}^{N}\_{k=1}$ inside $(0,L)\times(0,T)$, $D_{BC}$ the set of points of $\\{d^k\\}^{N}\_{k=1}$ in $(\{0\}\cup \{L\})\times(0,T)$ and $D_{0}$ the set of points of $\\{d^k\\}^{N}\_{k=1}$ in $(0,L)\times\{0\}$. Thus, the loss function we consider in training the neural network is:
