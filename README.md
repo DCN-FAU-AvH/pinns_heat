@@ -35,7 +35,7 @@ $$
 
 **Remark 1:** Both the architecture and the activation function of the previous neural network can be changed, taking care that this new architecture has reasonable approximation properties and that the activation function is as differentiable as the PINN scheme requires. In the case of the heat equation, from the standard theory of parabolic equations, the solution is in $C(0,T;L^2(0,L))$. Therefore, it is enough that the neural network approximates a dense family in $C(0,T;L^2(0,L))$. It is also necessary to consider a twice-differentiable activation function.
 
-The key idea of PINNs to satisfy (1), is to introduce a penalty to the neural network so that it satisfies both the PDE and the boundary and initial conditions. For this, we introduce the following loss functions.
+To satisfy (1), the main idea of PINNs is to introduce a penalty to the neural network so that it satisfies both the PDE and the boundary and initial conditions. For this, we introduce the following loss functions.
 
 $$\eqalign{
 &Loss_{PDE}(\Theta):= \frac{1}{N_f} \sum_{d^k\in D_{PDE}}^{N_f}\|(\partial_t z_\Theta-\partial_{xx} z_{\Theta})[d^k] - f\|^2, \newline 
@@ -51,8 +51,7 @@ $$
 
 where the constants $w_{PDE}$, $w_{BC}$ and $w_{INT}$ are hyperparameters of the model.
 
-**Remark 2:** One of the important advantages of PINNs is that it is not necessary to know labels. It is only necessary to have a sample of points from our spatio-temporal domain.
-
+**Remark 2:** One of the important advantages of PINNs is that it is not necessary to have labels, as is typically the case in supervised learning. It is sufficient to have a sample of points from our spatio-temporal domain.
 ## Examples in the code 
 
 This code contains two examples.
