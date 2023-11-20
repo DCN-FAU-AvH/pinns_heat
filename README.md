@@ -43,7 +43,7 @@ $$\eqalign{
 &Loss_{INT} (\Theta):= \sum_{d^k\in D_0} \|z_{\Theta}[d^k]\|^2,}
 $$
 
-where $D_{INT}$ is the set of points of $D$ inside $(0,L)\times(0,T)$, $D_{BC}$ the set of points of $D$ in $(\\{0\\}\cup \{L\})\times(0,T)$ and $D_{0}$ the set of points of $D$ in $(0,L)\times\\{0\\}$. Thus, the loss function we consider in training the neural network is:
+where $D_{INT}$ is the set of points of $D$ inside $(0,L)\times(0,T)$, $D_{BC}$ the set of points of $D$ in $(\\{0\\}\cup \\{L\\})\times(0,T)$ and $D_{0}$ the set of points of $D$ in $(0,L)\times\\{0\\}$. Thus, the loss function we consider in training the neural network is:
 
 $$
 Loss(\Theta):=w_{PDE}*Loss_{PDE}(\Theta)+w_{BC}*Loss_{BC} (\Theta)+w_{INT}*Loss_{INT} (\Theta),\qquad (2)
